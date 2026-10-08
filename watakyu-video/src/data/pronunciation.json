@@ -1,0 +1,90 @@
+{
+  "_note": "固有名詞の読みとアクセント（VOICEVOX ユーザー辞書）。accent_type はアクセント核のモーラ位置（0=平板）。tools/tts.py が毎回読み込んで OpenJTalk に登録する。読み上げ用カナ（script.json の speech[].parts[].kana）を書かない文はこの辞書を使った自動解析になる。",
+  "words": [
+    {
+      "surface": "ワタキューセイモア",
+      "pronunciation": "ワタキューセイモア",
+      "accent_type": 5,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ワタキュウセ'イモア"
+    },
+    {
+      "surface": "ワタキューベトナム",
+      "pronunciation": "ワタキューベトナム",
+      "accent_type": 5,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ワタキュウベ'トナム"
+    },
+    {
+      "surface": "リネンサプライ",
+      "pronunciation": "リネンサプライ",
+      "accent_type": 4,
+      "word_type": "COMMON_NOUN",
+      "check_kana": "リネンサ'プライ"
+    },
+    {
+      "surface": "ホーチミン市",
+      "pronunciation": "ホーチミンシ",
+      "accent_type": 4,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ホオチミ'ンシ",
+      "priority": 10
+    },
+    {
+      "surface": "ホーチミン",
+      "pronunciation": "ホーチミン",
+      "accent_type": 3,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ホオチ'ミン"
+    },
+    {
+      "surface": "レバンティン病院",
+      "pronunciation": "レバンティンビョーイン",
+      "accent_type": 6,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "レバンティンビョ'オイン"
+    },
+    {
+      "surface": "日清医療食品",
+      "pronunciation": "ニッシンイリョーショクヒン",
+      "accent_type": 8,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ニッシンイリョオショ'_クヒン"
+    },
+    {
+      "surface": "ドンナイ省",
+      "pronunciation": "ドンナイショー",
+      "accent_type": 4,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ドンナイ'ショオ"
+    },
+    {
+      "surface": "JICA",
+      "pronunciation": "ジャイカ",
+      "accent_type": 1,
+      "word_type": "PROPER_NOUN",
+      "check_kana": "ジャ'イカ"
+    },
+    {
+      "surface": "電子タグ",
+      "pronunciation": "デンシタグ",
+      "accent_type": 4,
+      "word_type": "COMMON_NOUN",
+      "check_kana": "デン_シタ'グ"
+    },
+    {
+      "surface": "ソフトテニス部",
+      "pronunciation": "ソフトテニスブ",
+      "accent_type": 5,
+      "word_type": "COMMON_NOUN",
+      "check_kana": "ソ_フトテニ'スブ"
+    },
+    {
+      "surface": "グループ会社",
+      "pronunciation": "グループガイシャ",
+      "accent_type": 5,
+      "word_type": "COMMON_NOUN",
+      "check_kana": "グルウプガ'イシャ"
+    }
+  ]
+}
