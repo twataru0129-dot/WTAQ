@@ -13,7 +13,7 @@ import { S05 } from "./scenes/S05";
 import { S06 } from "./scenes/S06";
 import { S07 } from "./scenes/S07";
 import { S08 } from "./scenes/S08";
-import { buildTimeline, totalFrames, type SceneId } from "./timeline";
+import { buildTimeline, totalFrames, type SceneId, type Voice } from "./timeline";
 import { C, FPS } from "./theme";
 
 export const OVERLAP = 18; // 場面転換 0.6秒（次の場面がフェードインで重なる）
@@ -24,8 +24,8 @@ const SCENES: Record<SceneId, React.FC<{ version: "main" | "full" }>> = {
 };
 
 
-export const Video: React.FC<{ version: "main" | "full" }> = ({ version }) => {
-  const tl = buildTimeline(version);
+export const Video: React.FC<{ version: "main" | "full"; voice?: Voice }> = ({ version, voice = "v2" }) => {
+  const tl = buildTimeline(version, voice);
   const total = totalFrames(tl);
   const cues = buildCues(tl);
   const lastNarr = cues[cues.length - 1].end;
