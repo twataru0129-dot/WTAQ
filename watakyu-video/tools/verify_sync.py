@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """書き出したMP4の音声から各シーンのナレーション位置を相互相関で探し、
 タイムライン（＝字幕）の想定位置とのずれ、および音声末尾が切れていないかを確認する。
-使い方: python3 tools/verify_sync.py out/watakyu_full.mp4 full
+使い方: python3 tools/verify_sync.py deliverables/watakyu_full_v2.mp4 full [v2|v1]
 """
 import json, subprocess, sys, wave
 from pathlib import Path
@@ -10,8 +10,9 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 SR = 8000
 mp4, version = sys.argv[1], sys.argv[2]
+voice = sys.argv[3] if len(sys.argv) > 3 else "v2"
 script = json.loads((ROOT / "src/data/script.json").read_text())
-timing = json.loads((ROOT / "src/data/timing.json").read_text())
+timing = json.loads((ROOT / ("src/data/timing.json" if voice == "v1" else "src/data/timing_v2.json")).read_text())
 raw = subprocess.run(["ffmpeg", "-v", "error", "-i", mp4, "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"], capture_output=True).stdout
 mix = np.frombuffer(raw, np.int16).astype(np.float32) / 32768
 

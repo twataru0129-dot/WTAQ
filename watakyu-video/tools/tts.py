@@ -20,6 +20,7 @@
        '  アクセント核（その直後で下がる。句末に置くと平板）
        /  アクセント句の区切り（息継ぎなし）   、 区切り＋短い間   _ 無声化
      kana が無い場合は parts[].text をユーザー辞書つきで自動解析する。
+     kana 中の | は合成には使わない目印で、アニメーションのきっかけ（segments）の区切りになる。
   3. 合成前に抑揚を補正する（voiceV2）
        peakKnee/Ratio 文の中央値より高すぎる山を圧縮し、単語ごとの大きな上下を抑える
        sentenceDecl   文の後ろの句ほどわずかに低くする（上限 sentenceDeclMax）
@@ -83,7 +84,12 @@ def to_kana(phrases) -> str:
 
 
 def n_phrases(kana: str) -> int:
-    return len(re.split(r"[/、]", kana))
+    return len(re.split(r"[/、]", kana.replace("|", "").strip("/、")))
+
+
+def seg_counts(kana: str) -> list[int]:
+    """| で区切った各区間のアクセント句数"""
+    return [n_phrases(k) for k in kana.split("|")]
 
 
 def adjust(phrases, v, question: bool):
@@ -171,7 +177,7 @@ def make_query(syn, sentence, v):
     sid = v["styleId"]
     parts = sentence["parts"]
     if all("kana" in p for p in parts):
-        kana = "、".join(p["kana"] for p in parts)
+        kana = "、".join(p["kana"].replace("|", "") for p in parts)
         q = syn.create_audio_query_from_kana(kana, sid)
         counts = [n_phrases(p["kana"]) for p in parts]
     else:  # 辞書つき自動解析（part ごとの句数は個別解析で求める）
@@ -199,8 +205,12 @@ def synth_sentence(syn, sentence, v):
     x = wav_to_np(syn.synthesis(q, v["styleId"], enable_interrogative_upspeak=False))
     pt = phrase_times(q)
     spans, k = [], 0
-    for n in counts:
-        spans.append((pt[k][0], pt[k + n - 1][1]))
+    for p, n in zip(sentence["parts"], counts):
+        segs, kk = [], k
+        for m in seg_counts(p["kana"]) if "kana" in p else [n]:
+            segs.append((pt[kk][0], pt[kk + m - 1][1]))
+            kk += m
+        spans.append((pt[k][0], pt[k + n - 1][1], segs))
         k += n
     return x, spans, to_kana(q.accent_phrases)
 
@@ -209,18 +219,22 @@ def build_scene(syn, sc, v, readings=None):
     """シーン1つ分：文を合成して無音でつなぎ、字幕チャンクの時刻を返す"""
     pieces, t = [], 0.0
     ch_t: dict[int, list[float]] = {}
+    ch_seg: dict[int, list[dict]] = {}
     for sent in sc["speech"]:
         x, spans, kana = synth_sentence(syn, sent, v)
-        for p, (s, e) in zip(sent["parts"], spans):
+        for p, (s, e, segs) in zip(sent["parts"], spans):
             c = ch_t.setdefault(p["chunk"], [t + s, t + e])
             c[0] = min(c[0], t + s)
             c[1] = max(c[1], t + e)
+            texts = p.get("kana", p["text"]).split("|")
+            for (a, b), tx in zip(segs, texts):
+                ch_seg.setdefault(p["chunk"], []).append({"tts": tx.strip("/、"), "start": round(t + a, 3), "end": round(t + b, 3)})
         if readings is not None:
             readings.append(f"{sc['id']}\t{''.join(p['text'] for p in sent['parts'])}\t{kana}")
         pieces += [x, np.zeros(int(sent["pause"] * SR), np.float32)]
         t += len(x) / SR + sent["pause"]
     audio = np.concatenate(pieces)
-    chunks = [{"text": c["text"], "start": round(ch_t[i][0], 3), "end": round(ch_t[i][1], 3), "segments": []}
+    chunks = [{"text": c["text"], "start": round(ch_t[i][0], 3), "end": round(ch_t[i][1], 3), "segments": ch_seg[i]}
               for i, c in enumerate(sc["chunks"])]
     return audio, chunks
 

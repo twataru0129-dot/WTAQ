@@ -9,12 +9,17 @@
     "music": "python3 tools/music.py && ffmpeg -y -loglevel error -i public/music/bgm.wav -c:a aac -b:a 192k public/music/bgm.m4a && rm public/music/bgm.wav",
     "glyphs": "node tools/collect-glyphs.mjs",
     "srt": "node tools/make-srt.mjs",
-    "docs": "node tools/make-script-md.mjs",
-    "render:main": "npm run glyphs && remotion render src/index.ts Main out/raw_main.mp4 && tools/finalize.sh out/raw_main.mp4 deliverables/watakyu_main.mp4",
-    "render:full": "npm run glyphs && remotion render src/index.ts Full out/raw_full.mp4 && tools/finalize.sh out/raw_full.mp4 deliverables/watakyu_full.mp4",
+    "docs": "node tools/make-script-md.mjs v2 && node tools/make-script-md.mjs v1",
+    "render:main": "npm run glyphs && remotion render src/index.ts Main out/raw_main_v2.mp4 && tools/finalize.sh out/raw_main_v2.mp4 deliverables/watakyu_main_v2.mp4",
+    "render:full": "npm run glyphs && remotion render src/index.ts Full out/raw_full_v2.mp4 && tools/finalize.sh out/raw_full_v2.mp4 deliverables/watakyu_full_v2.mp4",
     "build": "npm run srt && npm run docs && npm run render:main && npm run render:full",
-    "verify": "python3 tools/verify_sync.py deliverables/watakyu_main.mp4 main && python3 tools/verify_sync.py deliverables/watakyu_full.mp4 full",
-    "typecheck": "tsc -p ."
+    "verify": "python3 tools/verify_sync.py deliverables/watakyu_main_v2.mp4 main v2 && python3 tools/verify_sync.py deliverables/watakyu_full_v2.mp4 full v2 && python3 tools/compare_voices.py && python3 tools/compare_voices.py deliverables/watakyu_main_v2.mp4 main && python3 tools/compare_voices.py deliverables/watakyu_full_v2.mp4 full",
+    "typecheck": "tsc -p .",
+    "tts:check": "python3 tools/tts.py --check",
+    "tts:v1": "python3 tools/tts_v1.py",
+    "samples": "python3 tools/make_samples.py",
+    "render:main:v1": "npm run glyphs && remotion render src/index.ts MainV1 out/raw_main.mp4 && tools/finalize.sh out/raw_main.mp4 deliverables/watakyu_main.mp4",
+    "render:full:v1": "npm run glyphs && remotion render src/index.ts FullV1 out/raw_full.mp4 && tools/finalize.sh out/raw_full.mp4 deliverables/watakyu_full.mp4"
   },
   "dependencies": {
     "@fontsource/noto-sans-jp": "^5.3.0",

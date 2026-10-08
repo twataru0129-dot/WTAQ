@@ -1,5 +1,6 @@
 import script from "./data/script.json";
-import timing from "./data/timing.json";
+import timingV1 from "./data/timing.json";
+import timingV2 from "./data/timing_v2.json";
 import { FPS } from "./theme";
 
 export type Segment = { tts: string; start: number; end: number };
@@ -28,8 +29,11 @@ export const APPENDIX03_SEC = 5.5;
 
 const sec2f = (s: number) => Math.round(s * FPS);
 
-export const buildTimeline = (version: "main" | "full"): SceneTiming[] => {
-  const tm = timing as Record<string, { audio: string; duration: number; chunks: Chunk[] }>;
+// ナレーションの版：v1＝初版（比較用に保存）、v2＝アクセント・抑揚を調整した修正版
+export type Voice = "v1" | "v2";
+
+export const buildTimeline = (version: "main" | "full", voice: Voice = "v2"): SceneTiming[] => {
+  const tm = (voice === "v1" ? timingV1 : timingV2) as Record<string, { audio: string; duration: number; chunks: Chunk[] }>;
   const ids = script.scenes
     .filter((s) => version === "full" || s.part === "main")
     .map((s) => s.id);
