@@ -47,7 +47,7 @@ npm run studio      # Main / Full（修正版）、MainV1 / FullV1（初版）�
 
 ```bash
 npm run build       # SRT・script.md を生成し、修正版の2版をレンダリング → deliverables/*_v2.mp4
-npm run verify      # 書き出した音声と字幕タイミングのずれを確認（numpy が必要）
+npm run verify      # 書き出した音声と字幕タイミングのずれ、完成MP4に修正版（v2）の音声が入っているかを確認（numpy が必要）
 npm run render:main:v1 / render:full:v1   # 初版を作り直す場合
 ```
 
